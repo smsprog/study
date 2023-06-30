@@ -26,7 +26,7 @@ class m {
 		test(1,2,1); 	if(xx[0]==-1 && xx[1]==-1)System.out.println("Test7 passed"); else System.out.println("Test7 FAILED");
 		e=test(0,2,1);	if(e!=null)System.out.println("Test9 passed"); else System.out.println("Test9 FAILED");
 		test(1-1e-8,2,1); 	if(xx[0]==xx[1])System.out.println("Test7.1 passed"); else System.out.println("Test7.1 FAILED");
-		test(1e-7,2,1);
+		test(1e-8,2,1);
     }
 	
 	public static Exception test(double a, double b, double c) {
