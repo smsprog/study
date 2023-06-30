@@ -25,3 +25,5 @@ jobs:
       run: ant -noinput -buildfile build.xml
     - name: ls
       run: ls -al
+    - name: EXECUTE
+      run: java m
