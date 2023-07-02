@@ -11,5 +11,6 @@
 <target name="compile" description="compile whole project">
     <echo>compile ${ant.project.name} </echo>
     <javac srcdir="${src}" destdir="${build}" includes="dz1.java"/>
+    <javac srcdir="${src}" destdir="${build}" includes="dz2.java"/>
   </target>
 </project>
