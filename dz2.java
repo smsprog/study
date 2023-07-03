@@ -1,15 +1,34 @@
 import java.util.Vector;
 
+interface ICommand {
+	void exec() throws Exception;
+}
+
 interface IRotatable {
 	void rotate(double alpha) throws Exception;
+}
+
+interface IMovable {
+	Vector getPosition() throws Exception;
+	void setPosition(Vector newPosition) throws Exception;
+	void move() throws Exception;
+}
+
+interface UObject {
+	Object getProperty(String key) throws Exception;
+	void setProperty(String key, Object o) throws Exception;
+	void showPosition(String prefix);
 }
 
 class RotatableAdapter implements IRotatable {
 	private static double eps=0.0001;
 	private UObject o;
 	
-	public RotatableAdapter(UObject o) {
+	public RotatableAdapter(UObject o, int alphaDirection, int directionNumber) throws Exception {
+		//System.out.println("RotatableAdapter.RotatableAdapter(): "+alphaDirection);
 		this.o=o;
+		this.o.setProperty("alphaDirection",alphaDirection);
+		this.o.setProperty("directionNumber",directionNumber);
 	}
 
 	public void rotate(double alpha) throws Exception {
@@ -25,18 +44,24 @@ class RotatableAdapter implements IRotatable {
 	}
 }
 
-interface IMovable {
-	Vector getPosition() throws Exception;
-	void setPosition(Vector newPosition) throws Exception;
-	void move() throws Exception;
-}
-
-class MovableAdapter implements IMovable {
+class MovableAdapter implements IMovable, ICommand {
 	private static double eps=0.0001;
 	private UObject o;
 	
 	public MovableAdapter(UObject o) {
 		this.o=o;
+	}
+	
+	public MovableAdapter(UObject o, double v) throws Exception {
+		//System.out.println("Ship.Ship()");
+		this(o);
+		this.o.setProperty("v",v);
+	}
+	
+	public MovableAdapter(UObject o, double dx, double dy) throws Exception {
+		//System.out.println("Ship.Ship()");
+		this(o);
+		setVelocity(dx, dy);
 	}
 
 	public void setPosition(Vector newPosition) throws Exception {
@@ -53,6 +78,10 @@ class MovableAdapter implements IMovable {
 			throw new Exception("Unknown position");
 		}
 		return(v);
+	}
+	
+	public void exec() throws Exception {
+		move();
 	}
 	
 	public void move() throws Exception {
@@ -72,70 +101,13 @@ class MovableAdapter implements IMovable {
 		posNew.add((double)pos.elementAt(1)+v*Math.sin(alpha));
 		setPosition(posNew);
 	}
-}
-
-interface UObject {
-	Object getProperty(String key);
-	void setProperty(String key, Object o) throws Exception;
-	void showPosition(String prefix);
-}
-
-class Ship implements UObject {
-	private static double eps=0.0001;
-	private Vector position;
-	private double v; // speed
 	
-	private int directionNumber;
-	private int alphaDirection;
-
-
-	public Ship(double x, double y, int alphaDirection, int directionNumber) {
-		//System.out.println("Ship.Ship()");
-		position=new Vector();
-		position.add(x);
-		position.add(y);
-		this.alphaDirection=alphaDirection;
-		this.directionNumber=directionNumber;
-	}
-
-	public Ship(double x, double y, int alphaDirection, int directionNumber, double v) {
-		//System.out.println("Ship.Ship()");
-		this(x, y, alphaDirection, directionNumber);
-		this.v=v;
-	}
-	
-	public Ship(double x, double y, int alphaDirection, int directionNumber, double dx, double dy) {
-		//System.out.println("Ship.Ship()");
-		this(x, y, alphaDirection, directionNumber);
-		setVelocity(dx, dy);
-	}
-
-	public Object getProperty(String key) {
-		if(key=="position")return(position);
-		else if(key=="alphaDirection")return(alphaDirection);
-		else if(key=="directionNumber")return(directionNumber);
-		else if(key=="v")return(v);
-		else return(null);
-	}
-	
-	public void setProperty(String key, Object newValue) throws Exception {
-		//System.out.println("Ship.setProperty()");
-		if(key=="position")
-			position=(Vector)newValue;
-		else if(key=="v")
-			v=(double)newValue;
-		else if(key=="alphaDirection")
-			alphaDirection=(int)newValue;
-		else
-			throw new Exception("property not found");
-	}
-	
-	public void showPosition(String prefix) {
-		System.out.println(prefix+"Ship.showPosition(): x="+(double)position.elementAt(0)+", y="+(double)position.elementAt(1));
-	}
-	
-	public void setVelocity(double dx, double dy) {
-		double alpha;
+	public void setVelocity(double dx, double dy) throws Exception {
+		double alpha,v;
+		int alphaDirection,directionNumber;
+		
+		alphaDirection=(int)o.getProperty("alphaDirection");
+		directionNumber=(int)o.getProperty("directionNumber");
 		
 		v=Math.sqrt(dx*dx+dy*dy);
 		if(dx>eps) {
@@ -156,13 +128,62 @@ class Ship implements UObject {
 			alpha*=180.0/Math.PI;  //System.out.println(alpha);
 			alphaDirection=(int)Math.ceil(directionNumber*alpha/360.0);
 		}
+		
+		o.setProperty("alphaDirection",alphaDirection);
+		o.setProperty("v",v);
 		System.out.println("Ship.setVelocity(): alphaDirection="+alphaDirection+" v="+v);
+	}
+}
+
+
+
+class Ship implements UObject {
+	private static double eps=0.0001;
+	private Vector position;
+	private double v; // speed
+	
+	private int directionNumber;
+	private int alphaDirection;
+
+
+	public Ship(double x, double y) {
+		//System.out.println("Ship.Ship()");
+		position=new Vector();
+		position.add(x);
+		position.add(y);
+	}
+
+	public Object getProperty(String key) throws Exception {
+		if(key=="position")return(position);
+		else if(key=="alphaDirection")return(alphaDirection);
+		else if(key=="directionNumber")return(directionNumber);
+		else if(key=="v")return(v);
+		else throw new Exception("property for GET not found: "+key);
+	}
+	
+	public void setProperty(String key, Object newValue) throws Exception {
+		//System.out.println("Ship.setProperty()");
+		if(key=="position")
+			position=(Vector)newValue;
+		else if(key=="v")
+			v=(double)newValue;
+		else if(key=="alphaDirection")
+			alphaDirection=(int)newValue;
+		else if(key=="directionNumber")
+			directionNumber=(int)newValue;
+		else
+			throw new Exception("property for SET not found: "+key);
+	}
+	
+	public void showPosition(String prefix) {
+		System.out.println(prefix+"Ship.showPosition(): x="+(double)position.elementAt(0)+", y="+(double)position.elementAt(1));
 	}
 	
 	public double getAlpha() {
 		return(360.0*alphaDirection/directionNumber);
 	}
 }
+
 
 class m {
 	private static double eps=0.0001;
@@ -182,9 +203,9 @@ class m {
 
 	public static Exception test(double x, double y, int alphaDirection, int directionNumber, double dx, double dy, double a) {
 		try {
-			Ship ship1=new Ship(x, y, alphaDirection, directionNumber, dx, dy);
-			MovableAdapter 		aShip1=new MovableAdapter(ship1);
-			RotatableAdapter 	rShip1=new RotatableAdapter(ship1);
+			Ship ship1=new Ship(x, y);
+			MovableAdapter 		aShip1=new MovableAdapter(ship1, dx, dy);
+			RotatableAdapter 	rShip1=new RotatableAdapter(ship1, alphaDirection, directionNumber);
 			
 			//aShip1.setPosition(new Vector());
 			ship1.showPosition("BEFORE: ");
