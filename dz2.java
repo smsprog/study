@@ -107,7 +107,7 @@ class MovableAdapter implements IMovable, ICommand {
 		
 		alphaDirection=(int)o.getProperty("alphaDirection");
 		directionNumber=(int)o.getProperty("directionNumber");
-		System.out.println("Ship.setVelocity(): dx="+dx+" dy="+dy+" alphaDirection="+alphaDirection+" directionNumber="+directionNumber);
+		//System.out.println("Ship.setVelocity(): dx="+dx+" dy="+dy+" alphaDirection="+alphaDirection+" directionNumber="+directionNumber);
 		
 		v=Math.sqrt(dx*dx+dy*dy);
 		if(dx>eps) {
@@ -132,7 +132,7 @@ class MovableAdapter implements IMovable, ICommand {
 		
 		o.setProperty("alphaDirection",alphaDirection);
 		o.setProperty("v",v);
-		System.out.println("Ship.setVelocity(): alphaDirection="+alphaDirection+" v="+v);
+		//System.out.println("Ship.setVelocity(): alphaDirection="+alphaDirection+" v="+v);
 	}
 }
 
@@ -219,8 +219,9 @@ class m {
 			
 			try {
 				while(true) {
-					ship1.showProps("BEFORE: ");
 					cmd=q.remove();
+					ship1.showProps("BEFORE: ");
+					
 					cmd.exec();
 					ship1.showProps("AFTER: ");
 				}
