@@ -5,7 +5,7 @@ name: Java CI
 
 on:
   push:
-    branches: [ "main", "dz2" ]
+    branches: [ "dz2" ]
   pull_request:
     branches: [ "main" ]
 
