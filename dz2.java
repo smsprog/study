@@ -205,7 +205,7 @@ class m {
 		e=test(Double.NaN, Double.NaN, 90.0, 8, 1, 1, 0.0);		if(e!=null)System.out.println("Test3 passed: "+e+"\n"); else System.out.println("Test3 FAILED, "+e+"\n"); 
 		e=test(0.0, 0.0, 90.0, 8, Double.NaN, Double.NaN, 0.0);	if(e!=null)System.out.println("Test4 passed: "+e+"\n"); else System.out.println("Test4 FAILED, "+e+"\n"); 
 		
-		e=test(0.0, 0.0, 2.0, 360, 0, 0, 90.0);	 				if(e==null && Math.abs(alpha-92)<eps)System.out.println("Test8.3 passed\n"); else System.out.println("Test8.3 FAILED, "+e+"\n");
+		e=test(0.0, 0.0, 0.0, 360, 1, 0, 90.0);	 				if(e==null && Math.abs(alpha-90)<eps)System.out.println("Test8.3 passed\n"); else System.out.println("Test8.3 FAILED, "+e+"\n");
     }
 
 	public static Exception test(double x, double y, double a, int directionNumber, double dx, double dy, double da) {
@@ -213,6 +213,7 @@ class m {
 			Queue<ICommand> q = new LinkedList<>();
 			Ship 		ship1=new Ship(x, y, a, directionNumber);
 			ICommand	cmd;
+			int i=1;
 			
 			q.add(new MovableAdapter(ship1, dx, dy)); 
 			if(da>0.0)q.add(new RotatableAdapter(ship1, da)); 
@@ -220,10 +221,10 @@ class m {
 			try {
 				while(true) {
 					cmd=q.remove();
-					ship1.showProps("BEFORE: ");
-					
+					ship1.showProps(i+"-BEFORE: ");
 					cmd.exec();
-					ship1.showProps("AFTER: ");
+					ship1.showProps(i+"-AFTER: ");
+					i++; System.out.println("");
 				}
 			} catch (NoSuchElementException qException) {
 				System.out.println(".");
