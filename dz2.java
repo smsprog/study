@@ -23,7 +23,20 @@ interface UObject {
 	//void showPosition(String prefix);
 }
 
-class RotatableAdapter implements IRotatable, ICommand {
+class RotateCommand implements ICommand {
+	private IRotatable ad;
+	
+	public RotateCommand(IRotatable ad) throws Exception {
+		//System.out.println("RotatableAdapter.RotatableAdapter(): "+a);
+		this.ad=ad;
+	}
+
+	public void exec() throws Exception {
+		ad.rotate();
+	}
+}
+
+class RotatableAdapter implements IRotatable {
 	private static double eps=0.0001;
 	private UObject o;
 	private double da;
@@ -33,10 +46,6 @@ class RotatableAdapter implements IRotatable, ICommand {
 		//System.out.println("RotatableAdapter.RotatableAdapter(): "+a);
 		this.o=o;
 		this.da=da%360;
-	}
-
-	public void exec() throws Exception {
-		rotate();
 	}
 
 	public void rotate() throws Exception {
@@ -54,7 +63,19 @@ class RotatableAdapter implements IRotatable, ICommand {
 	}
 }
 
-class MovableAdapter implements IMovable, ICommand {
+class MoveCommand implements ICommand {
+	private IMovable ad;
+	
+	public MoveCommand(IMovable ad) throws Exception {
+		this.ad=ad;
+	}
+
+	public void exec() throws Exception {
+		ad.move();
+	}
+}
+
+class MovableAdapter implements IMovable {
 	private static double eps=0.0001;
 	private UObject o;
 	
@@ -77,10 +98,6 @@ class MovableAdapter implements IMovable, ICommand {
 	public void setPosition(Vector newPosition) throws Exception {
 		o.setProperty("position",newPosition);
 		//o.showPosition("MovableAdapter: ");
-	}
-	
-	public void exec() throws Exception {
-		move();
 	}
 	
 	public void move() throws Exception {
@@ -210,13 +227,15 @@ class m {
 
 	public static Exception test(double x, double y, double a, int directionNumber, double dx, double dy, double da) {
 		try {
-			Queue<ICommand> q = new LinkedList<>();
-			Ship 		ship1=new Ship(x, y, a, directionNumber);
-			ICommand	cmd;
+			Queue<ICommand> 	q = new LinkedList<>();
+			ICommand			cmd;
 			int i=1;
+			Ship 				ship1=new Ship(x, y, a, directionNumber);
+			RotatableAdapter 	rShip=new RotatableAdapter(ship1, da);
+			MovableAdapter 		mShip=new MovableAdapter(ship1, dx, dy);
 			
-			q.add(new MovableAdapter(ship1, dx, dy)); 
-			if(da>0.0)q.add(new RotatableAdapter(ship1, da)); 
+			q.add(new MoveCommand(mShip)); 
+			if(da>0.0)q.add(new RotateCommand(rShip)); 
 			
 			try {
 				while(true) {
