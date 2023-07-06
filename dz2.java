@@ -1,42 +1,61 @@
 import java.util.Vector;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.NoSuchElementException;
 
 interface ICommand {
 	void exec() throws Exception;
 }
 
 interface IRotatable {
-	void rotate(double alpha) throws Exception;
+	void rotate() throws Exception;
 }
 
 interface IMovable {
-	Vector getPosition() throws Exception;
-	void setPosition(Vector newPosition) throws Exception;
 	void move() throws Exception;
+	void setPosition(Vector newPosition) throws Exception;
 }
 
 interface UObject {
 	Object getProperty(String key) throws Exception;
 	void setProperty(String key, Object o) throws Exception;
-	void showPosition(String prefix);
+	Vector getPosition() throws Exception;
+	//void showPosition(String prefix);
+}
+
+class RotateCommand implements ICommand {
+	private IRotatable ad;
+	
+	public RotateCommand(IRotatable ad) throws Exception {
+		//System.out.println("RotatableAdapter.RotatableAdapter(): "+a);
+		this.ad=ad;
+	}
+
+	public void exec() throws Exception {
+		ad.rotate();
+	}
 }
 
 class RotatableAdapter implements IRotatable {
 	private static double eps=0.0001;
 	private UObject o;
+	private double da;
 	
-	public RotatableAdapter(UObject o, int alphaDirection, int directionNumber) throws Exception {
-		//System.out.println("RotatableAdapter.RotatableAdapter(): "+alphaDirection);
+	public RotatableAdapter(UObject o, double da) throws Exception {
+		int directionNumber,alphaDirection;
+		//System.out.println("RotatableAdapter.RotatableAdapter(): "+a);
 		this.o=o;
-		this.o.setProperty("alphaDirection",alphaDirection);
-		this.o.setProperty("directionNumber",directionNumber);
+		this.da=da%360;
 	}
 
-	public void rotate(double alpha) throws Exception {
+	public void rotate() throws Exception {
 		int alphaDirection,directionNumber;
+		double alpha;
 		
-		alphaDirection=(int)o.getProperty("alphaDirection");
 		directionNumber=(int)o.getProperty("directionNumber");
-		alpha+=360.0*alphaDirection/(double)directionNumber;
+		alphaDirection=(int)o.getProperty("alphaDirection");
+		alpha=360.0*alphaDirection/(double)directionNumber;
+		alpha+=da;
 		alpha=alpha%360;
 		alphaDirection=(int)(directionNumber*alpha/360.0);
 		System.out.println("RotatableAdapter.rotate(): alphaDirection="+alphaDirection+" directionNumber="+directionNumber+" alpha="+alpha);
@@ -44,7 +63,19 @@ class RotatableAdapter implements IRotatable {
 	}
 }
 
-class MovableAdapter implements IMovable, ICommand {
+class MoveCommand implements ICommand {
+	private IMovable ad;
+	
+	public MoveCommand(IMovable ad) throws Exception {
+		this.ad=ad;
+	}
+
+	public void exec() throws Exception {
+		ad.move();
+	}
+}
+
+class MovableAdapter implements IMovable {
 	private static double eps=0.0001;
 	private UObject o;
 	
@@ -69,28 +100,13 @@ class MovableAdapter implements IMovable, ICommand {
 		//o.showPosition("MovableAdapter: ");
 	}
 	
-	public Vector getPosition() throws Exception {
-		Vector v;
-		v=(Vector)o.getProperty("position");
-		//o.showPosition("MovableAdapter.getPosition(): "+v.elementAt(0)+" "+v.elementAt(1));
-		if(v.elementAt(0)==null || v.elementAt(1)==null || Double.isNaN((double)v.elementAt(0)) || Double.isNaN((double)v.elementAt(1))) {
-			//System.out.println("MovableAdapter.getPosition(): EXCEPTION");
-			throw new Exception("Unknown position");
-		}
-		return(v);
-	}
-	
-	public void exec() throws Exception {
-		move();
-	}
-	
 	public void move() throws Exception {
 		Vector pos;
 		Vector posNew=new Vector();
 		double v,alpha;
 		int alphaDirection,directionNumber;
 		
-		pos=getPosition();
+		pos=o.getPosition();
 		v=(double)o.getProperty("v");
 		alphaDirection=(int)o.getProperty("alphaDirection");
 		directionNumber=(int)o.getProperty("directionNumber");
@@ -108,6 +124,7 @@ class MovableAdapter implements IMovable, ICommand {
 		
 		alphaDirection=(int)o.getProperty("alphaDirection");
 		directionNumber=(int)o.getProperty("directionNumber");
+		//System.out.println("Ship.setVelocity(): dx="+dx+" dy="+dy+" alphaDirection="+alphaDirection+" directionNumber="+directionNumber);
 		
 		v=Math.sqrt(dx*dx+dy*dy);
 		if(dx>eps) {
@@ -127,15 +144,14 @@ class MovableAdapter implements IMovable, ICommand {
 		if(!Double.isNaN(alpha)) {
 			alpha*=180.0/Math.PI;  //System.out.println(alpha);
 			alphaDirection=(int)Math.ceil(directionNumber*alpha/360.0);
+			//System.out.println(alphaDirection);
 		}
 		
 		o.setProperty("alphaDirection",alphaDirection);
 		o.setProperty("v",v);
-		System.out.println("Ship.setVelocity(): alphaDirection="+alphaDirection+" v="+v);
+		//System.out.println("Ship.setVelocity(): alphaDirection="+alphaDirection+" v="+v);
 	}
 }
-
-
 
 class Ship implements UObject {
 	private static double eps=0.0001;
@@ -145,12 +161,13 @@ class Ship implements UObject {
 	private int directionNumber;
 	private int alphaDirection;
 
-
-	public Ship(double x, double y) {
+	public Ship(double x, double y, double a, int directionNumber) {
 		//System.out.println("Ship.Ship()");
 		position=new Vector();
 		position.add(x);
 		position.add(y);
+		this.directionNumber=directionNumber;
+		this.alphaDirection=(int)(directionNumber*a/360.0);
 	}
 
 	public Object getProperty(String key) throws Exception {
@@ -162,7 +179,7 @@ class Ship implements UObject {
 	}
 	
 	public void setProperty(String key, Object newValue) throws Exception {
-		//System.out.println("Ship.setProperty()");
+		//System.out.println("Ship.setProperty()"+newValue);
 		if(key=="position")
 			position=(Vector)newValue;
 		else if(key=="v")
@@ -175,15 +192,22 @@ class Ship implements UObject {
 			throw new Exception("property for SET not found: "+key);
 	}
 	
-	public void showPosition(String prefix) {
-		System.out.println(prefix+"Ship.showPosition(): x="+(double)position.elementAt(0)+", y="+(double)position.elementAt(1));
+	public void showProps(String prefix) {
+		System.out.println(prefix+"Ship.showProps(): x="+(double)position.elementAt(0)+" y="+(double)position.elementAt(1)+" v="+v+" alphaDirection="+alphaDirection+" directionNumber="+directionNumber);
 	}
 	
 	public double getAlpha() {
 		return(360.0*alphaDirection/directionNumber);
 	}
+	
+	public Vector getPosition() throws Exception {
+		if(position.elementAt(0)==null || position.elementAt(1)==null || Double.isNaN((double)position.elementAt(0)) || Double.isNaN((double)position.elementAt(1))) {
+			//System.out.println("MovableAdapter.getPosition(): EXCEPTION");
+			throw new Exception("Unknown position");
+		}
+		return(position);
+	}
 }
-
 
 class m {
 	private static double eps=0.0001;
@@ -193,33 +217,41 @@ class m {
     public static void main(String[] args) {
 		Exception e;
 		
-		e=test(0.0, 0.0, 2, 8, 1, 1, 0.0);	 					if(e==null)System.out.println("Test0 passed\n"); else System.out.println("Test0 FAILED, "+e+"\n"); 
-		e=test(12.0, 5.0, 1, (int)Math.pow(2, 19), -7, 3, 0.0);	if(e==null && Math.abs((double)pos.elementAt(0)-5)<eps && Math.abs((double)pos.elementAt(1)-8)<eps)System.out.println("Test1 passed\n"); else System.out.println("Test1 FAILED, "+e+"\n"); 
-		e=test(Double.NaN, Double.NaN, 2, 8, 1, 1, 0.0);		if(e!=null)System.out.println("Test3 passed: "+e+"\n"); else System.out.println("Test3 FAILED, "+e+"\n"); 
-		e=test(0.0, 0.0, 2, 8, Double.NaN, Double.NaN, 0.0);	if(e!=null)System.out.println("Test4 passed: "+e+"\n"); else System.out.println("Test4 FAILED, "+e+"\n"); 
+		e=test(0.0, 0.0, 90.0, 8, 1, 1, 0.0);	 					if(e==null)System.out.println("Test0 passed\n"); else System.out.println("Test0 FAILED, "+e+"\n"); 
+		e=test(12.0, 5.0, 10.0, (int)Math.pow(2, 19), -7, 3, 0.0);	if(e==null && Math.abs((double)pos.elementAt(0)-5)<eps && Math.abs((double)pos.elementAt(1)-8)<eps)System.out.println("Test1 passed\n"); else System.out.println("Test1 FAILED, "+e+"\n"); 
+		e=test(Double.NaN, Double.NaN, 90.0, 8, 1, 1, 0.0);		if(e!=null)System.out.println("Test3 passed: "+e+"\n"); else System.out.println("Test3 FAILED, "+e+"\n"); 
+		e=test(0.0, 0.0, 90.0, 8, Double.NaN, Double.NaN, 0.0);	if(e!=null)System.out.println("Test4 passed: "+e+"\n"); else System.out.println("Test4 FAILED, "+e+"\n"); 
 		
-		e=test(0.0, 0.0, 2, 360, 0, 0, 90.0);	 				if(e==null && Math.abs(alpha-92)<eps)System.out.println("Test8.3 passed\n"); else System.out.println("Test8.3 FAILED, "+e+"\n");
+		e=test(0.0, 0.0, 0.0, 360, 1, 0, 90.0);	 				if(e==null && Math.abs(alpha-90)<eps)System.out.println("Test8.3 passed\n"); else System.out.println("Test8.3 FAILED, "+e+"\n");
     }
 
-	public static Exception test(double x, double y, int alphaDirection, int directionNumber, double dx, double dy, double a) {
+	public static Exception test(double x, double y, double a, int directionNumber, double dx, double dy, double da) {
 		try {
-			Ship ship1=new Ship(x, y);
-			MovableAdapter 		aShip1=new MovableAdapter(ship1, dx, dy);
-			RotatableAdapter 	rShip1=new RotatableAdapter(ship1, alphaDirection, directionNumber);
+			Queue<ICommand> 	q = new LinkedList<>();
+			ICommand			cmd;
+			int i=1;
+			Ship 				ship1=new Ship(x, y, a, directionNumber);
+			RotatableAdapter 	rShip=new RotatableAdapter(ship1, da);
+			MovableAdapter 		mShip=new MovableAdapter(ship1, dx, dy);
 			
-			//aShip1.setPosition(new Vector());
-			ship1.showPosition("BEFORE: ");
-			aShip1.move();
-			ship1.showPosition("AFTER MOVE: ");
-			if(a>0.0) {
-				rShip1.rotate(a); 
-				ship1.showPosition("AFTER ROTATE: ");
+			q.add(new MoveCommand(mShip)); 
+			if(da>0.0)q.add(new RotateCommand(rShip)); 
+			
+			try {
+				while(true) {
+					cmd=q.remove();
+					ship1.showProps(i+"-BEFORE: ");
+					cmd.exec();
+					ship1.showProps(i+"-AFTER: ");
+					i++; System.out.println("");
+				}
+			} catch (NoSuchElementException qException) {
+				System.out.println(".");
 			}
-			pos=aShip1.getPosition();
+			pos=ship1.getPosition();
 			alpha=ship1.getAlpha();
-			//System.out.println(pos);
 		} catch (Exception e) {
-			System.out.println("Some exception");
+			System.out.println("EXCEPTION! ");
 			return(e);
 		}
 		return(null);
