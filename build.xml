@@ -10,7 +10,12 @@
 
 <target name="compile" description="compile whole project">
     <echo>compile ${ant.project.name} </echo>
+	<javac srcdir="${src}" destdir="${build}" includes="icommand/*.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="imovable/*.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="irotatable/*.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="uobject/*.java"/>
     <javac srcdir="${src}" destdir="${build}" includes="dz1.java"/>
     <javac srcdir="${src}" destdir="${build}" includes="dz2.java"/>
+    <javac srcdir="${src}" destdir="${build}" includes="dz3.java"/>
   </target>
 </project>
