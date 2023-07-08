@@ -4,7 +4,6 @@ import uobject.*;
 import java.util.Vector;
 
 public class MovableAdapter implements IMovable {
-	private static double eps=0.0001;
 	private UObject o;
 	
 	public MovableAdapter(UObject o) {
@@ -52,19 +51,19 @@ public class MovableAdapter implements IMovable {
 		
 		alphaDirection=(int)o.getProperty("alphaDirection");
 		directionNumber=(int)o.getProperty("directionNumber");
-		//System.out.println("Ship.setVelocity(): dx="+dx+" dy="+dy+" alphaDirection="+alphaDirection+" directionNumber="+directionNumber);
+		//System.out.println("MovableAdapter.setVelocity(): dx="+dx+" dy="+dy+" alphaDirection="+alphaDirection+" directionNumber="+directionNumber);
 		
 		v=Math.sqrt(dx*dx+dy*dy);
-		if(dx>eps) {
+		if(dx>Globals.eps) {
 			if(dy>0 || Math.abs(dy)==0)
 				alpha=Math.atan(dy/dx);
 			else
 				alpha=Math.atan(dy/dx)+2*Math.PI;
-		} else if(dx<-eps)
+		} else if(dx<-Globals.eps)
 			alpha=Math.atan(dy/dx)+Math.PI;
-		else if(dy>eps)
+		else if(dy>Globals.eps)
 			alpha=Math.PI/2;
-		else if(dy<-eps)
+		else if(dy<-Globals.eps)
 			alpha=-Math.PI/2;
 		else
 			alpha=Double.NaN;
@@ -77,6 +76,6 @@ public class MovableAdapter implements IMovable {
 		
 		o.setProperty("alphaDirection",alphaDirection);
 		o.setProperty("v",v);
-		//System.out.println("Ship.setVelocity(): alphaDirection="+alphaDirection+" v="+v);
+		//System.out.println("MovableAdapter.setVelocity(): alphaDirection="+alphaDirection+" v="+v);
 	}
 }

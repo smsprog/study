@@ -4,7 +4,6 @@ import uobject.*;
 import irotatable.*;
 
 public class RotatableAdapter implements IRotatable {
-	private static double eps=0.0001;
 	private UObject o;
 	private double da;
 	
