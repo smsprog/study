@@ -13,6 +13,7 @@
 	<javac srcdir="${src}" destdir="${build}" includes="icommand/*.java"/>
 	<javac srcdir="${src}" destdir="${build}" includes="imovable/*.java"/>
 	<javac srcdir="${src}" destdir="${build}" includes="irotatable/*.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="iburnable/*.java"/>
 	<javac srcdir="${src}" destdir="${build}" includes="uobject/*.java"/>
     <javac srcdir="${src}" destdir="${build}" includes="dz1.java"/>
     <javac srcdir="${src}" destdir="${build}" includes="dz2.java"/>
