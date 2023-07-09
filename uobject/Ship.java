@@ -5,8 +5,9 @@ import java.util.Vector;
 public class Ship implements UObject {
 	private Vector position;
 	private double v; // speed
-	
 	private int directionNumber;
+	private int phiDirection;
+	
 	private int alphaDirection;
 
 	private double fuelCapacity;
@@ -28,6 +29,7 @@ public class Ship implements UObject {
 		else if(key=="directionNumber")return(directionNumber);
 		else if(key=="fuelCapacity")return(fuelCapacity);
 		else if(key=="fuelBurnRate")return(fuelBurnRate);
+		else if(key=="phiDirection")return(phiDirection);
 		else if(key=="v")return(v);
 		else throw new Exception("property for GET not found: "+key);
 	}
@@ -46,6 +48,8 @@ public class Ship implements UObject {
 			fuelCapacity=(double)newValue;
 		else if(key=="fuelBurnRate")
 			fuelBurnRate=(double)newValue;
+		else if(key=="phiDirection")
+			phiDirection=(int)newValue;
 		else
 			throw new Exception("property for SET not found: "+key);
 	}
