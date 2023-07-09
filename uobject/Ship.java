@@ -1,6 +1,7 @@
 package uobject;
 
 import java.util.Vector;
+import java.lang.reflect.Field;
 
 public class Ship implements UObject {
 	private Vector position;
@@ -24,34 +25,14 @@ public class Ship implements UObject {
 	}
 
 	public Object getProperty(String key) throws Exception {
-		if(key=="position")return(position);
-		else if(key=="alphaDirection")return(alphaDirection);
-		else if(key=="directionNumber")return(directionNumber);
-		else if(key=="fuelCapacity")return(fuelCapacity);
-		else if(key=="fuelBurnRate")return(fuelBurnRate);
-		else if(key=="phiDirection")return(phiDirection);
-		else if(key=="v")return(v);
-		else throw new Exception("property for GET not found: "+key);
+		//Class myClass=this.getClass();
+		//Field field=this.getClass().getDeclaredField(key);
+		return(this.getClass().getDeclaredField(key).get(this));
 	}
 	
 	public void setProperty(String key, Object newValue) throws Exception {
-		//System.out.println("Ship.setProperty()"+newValue);
-		if(key=="position")
-			position=(Vector)newValue;
-		else if(key=="v")
-			v=(double)newValue;
-		else if(key=="alphaDirection")
-			alphaDirection=(int)newValue;
-		else if(key=="directionNumber")
-			directionNumber=(int)newValue;
-		else if(key=="fuelCapacity")
-			fuelCapacity=(double)newValue;
-		else if(key=="fuelBurnRate")
-			fuelBurnRate=(double)newValue;
-		else if(key=="phiDirection")
-			phiDirection=(int)newValue;
-		else
-			throw new Exception("property for SET not found: "+key);
+		//Field f=this.getClass().getDeclaredField(key);
+		this.getClass().getDeclaredField(key).set(this, newValue);
 	}
 	
 	public void showProps(String prefix) {
