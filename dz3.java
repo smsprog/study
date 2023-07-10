@@ -61,18 +61,3 @@ class m {
 
 }
 
-class ExceptionHandler {
-	public static ICommand Handle(Exception e, ICommand cmd, Queue<ICommand> q) throws Exception {
-						//q.add(new RepeatCommand(q, cmd));
-		String eName=e.getClass().getSimpleName();
-		String cmdName=cmd.getClass().getSimpleName();
-		
-		System.out.println("Handle EXCEPTION: "+eName+" "+cmdName);
-		if(!cmdName.equals("RetryCommand") && !cmdName.equals("SecondRetryCommand"))
-			return(new AddCommand(q, new RetryCommand(cmd)));
-		else if(cmdName.equals("RetryCommand"))
-			return(new AddCommand(q, new SecondRetryCommand(cmd)));
-		else
-			return(new AddCommand(q, new LogCommand(e)));
-	}
-}
