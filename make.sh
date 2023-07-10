@@ -10,6 +10,7 @@ if [[ $1 == "clean" ]] ; then
 	rm -rf ICommand/*.class
 	rm -rf IRotatable/*.class
 	rm -rf IMovable/*.class
+	rm -rf IBurnable/*.class
 	rm -rf UObject/*.class
 fi
 
