@@ -18,7 +18,7 @@ class m {
 		
 		//e=test(0.0, 0.0, 90.0, 8, 1, 1, 0.0);	 					if(e==null)System.out.println("Test0 passed\n"); else System.out.println("Test0 FAILED, "+e+"\n"); 
 		//e=test(12.0, 5.0, 10.0, (int)Math.pow(2, 19), -7, 3, 0.0);	if(e==null && Math.abs((double)pos.elementAt(0)-5)<eps && Math.abs((double)pos.elementAt(1)-8)<eps)System.out.println("Test1 passed\n"); else System.out.println("Test1 FAILED, "+e+"\n"); 
-		e=test(Double.NaN, Double.NaN, 90.0, 8, 1, 1, 0.0);		if(e!=null)System.out.println("Test3 passed: "+e+"\n"); else System.out.println("Test3 FAILED, "+e+"\n"); 
+		e=test(Double.NaN, Double.NaN, 90.0, 8, 1, 1, 0.0);		if(e!=null)System.out.println("===Test3 passed: "+e+"\n"); else System.out.println("===Test3 FAILED, "+e+"\n"); 
 		//e=test(0.0, 0.0, 90.0, 8, Double.NaN, Double.NaN, 0.0);	if(e!=null)System.out.println("Test4 passed: "+e+"\n"); else System.out.println("Test4 FAILED, "+e+"\n"); 
 		
 		//e=test(0.0, 0.0, 0.0, 360, 1, 0, 90.0);	 				if(e==null && Math.abs(alpha-90)<eps)System.out.println("Test8.3 passed\n"); else System.out.println("Test8.3 FAILED, "+e+"\n");
@@ -28,7 +28,7 @@ class m {
 		try {
 			Queue<ICommand> 	q = new LinkedList<>();
 			int i=1;
-			Ship 				ship1=new Ship(x, y, a, directionNumber);
+			Ship 				ship1=new Ship(x, y, a, directionNumber, 0.0);
 			RotatableAdapter 	rShip=new RotatableAdapter(ship1, da);
 			MovableAdapter 		mShip=new MovableAdapter(ship1, dx, dy);
 			

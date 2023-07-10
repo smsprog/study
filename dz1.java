@@ -24,14 +24,14 @@ class m {
     public static void main(String[] args) {
 		Exception e;
 		
-		e=test(1,0,1); 			if(xx.length==0)System.out.println("Test3 passed"); else System.out.println("Test3 FAILED");
-		e=test(1,0,-1); 		if(xx[0]==1 && xx[1]==-1)System.out.println("Test5 passed"); else System.out.println("Test5 FAILED");
-		e=test(1,2,1); 			if(xx[0]==-1 && xx[1]==-1)System.out.println("Test7 passed"); else System.out.println("Test7 FAILED");
-		e=test(0,2,1);			if(e!=null)System.out.println("Test9 passed"); else System.out.println("Test9 FAILED");
-		e=test(1-1e-8,2,1); 	if(xx[0]==xx[1])System.out.println("Test7.1 passed"); else System.out.println("Test7.1 FAILED");
-		e=test(1+1e-8,2,1); 	if(xx[0]==xx[1])System.out.println("Test7.2 passed"); else System.out.println("Test7.2 FAILED");
-		e=test(1e-8,2,1); 		if(e!=null)System.out.println("Test9.1 passed"); else System.out.println("Test9.1 FAILED");
-		e=test(1,Double.NaN,Double.NaN); if(e!=null)System.out.println("Test10 passed"); else System.out.println("Test10 FAILED");
+		e=test(1,0,1); 			if(xx.length==0)System.out.println("===Test3 passed"); else System.out.println("===Test3 FAILED");
+		e=test(1,0,-1); 		if(xx[0]==1 && xx[1]==-1)System.out.println("===Test5 passed"); else System.out.println("===Test5 FAILED");
+		e=test(1,2,1); 			if(xx[0]==-1 && xx[1]==-1)System.out.println("===Test7 passed"); else System.out.println("===Test7 FAILED");
+		e=test(0,2,1);			if(e!=null)System.out.println("===Test9 passed"); else System.out.println("===Test9 FAILED");
+		e=test(1-1e-8,2,1); 	if(xx[0]==xx[1])System.out.println("===Test7.1 passed"); else System.out.println("===Test7.1 FAILED");
+		e=test(1+1e-8,2,1); 	if(xx[0]==xx[1])System.out.println("===Test7.2 passed"); else System.out.println("===Test7.2 FAILED");
+		e=test(1e-8,2,1); 		if(e!=null)System.out.println("===Test9.1 passed"); else System.out.println("===Test9.1 FAILED");
+		e=test(1,Double.NaN,Double.NaN); if(e!=null)System.out.println("===Test10 passed"); else System.out.println("===Test10 FAILED");
     }
 	
 	public static Exception test(double a, double b, double c) {
