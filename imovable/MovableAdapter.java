@@ -4,7 +4,6 @@ import uobject.*;
 import java.util.Vector;
 
 public class MovableAdapter implements IMovable {
-	private static double eps=0.0001;
 	private UObject o;
 	
 	public MovableAdapter(UObject o) {
@@ -31,52 +30,52 @@ public class MovableAdapter implements IMovable {
 	public void move() throws Exception {
 		Vector pos;
 		Vector posNew=new Vector();
-		double v,alpha;
-		int alphaDirection,directionNumber;
+		double v,phi;
+		int phiDirection,directionNumber;
 		
 		pos=o.getPosition();
 		v=(double)o.getProperty("v");
-		alphaDirection=(int)o.getProperty("alphaDirection");
+		phiDirection=(int)o.getProperty("phiDirection");
 		directionNumber=(int)o.getProperty("directionNumber");
-		alpha=360.0*alphaDirection/(double)directionNumber*Math.PI/180.0;
-		System.out.println("MovableAdapter.move(): v="+v+" alphaDirection="+alphaDirection+" directionNumber="+directionNumber+" alpha="+alpha);
+		phi=360.0*phiDirection/(double)directionNumber*Math.PI/180.0;
+		System.out.println("MovableAdapter.move(): v="+v+" phiDirection="+phiDirection+" directionNumber="+directionNumber+" phi="+phi);
 
-		posNew.add((double)pos.elementAt(0)+v*Math.cos(alpha));
-		posNew.add((double)pos.elementAt(1)+v*Math.sin(alpha));
+		posNew.add((double)pos.elementAt(0)+v*Math.cos(phi));
+		posNew.add((double)pos.elementAt(1)+v*Math.sin(phi));
 		setPosition(posNew);
 	}
 	
 	public void setVelocity(double dx, double dy) throws Exception {
-		double alpha,v;
-		int alphaDirection,directionNumber;
+		double phi,v;
+		int phiDirection,directionNumber;
 		
-		alphaDirection=(int)o.getProperty("alphaDirection");
+		phiDirection=(int)o.getProperty("phiDirection");
 		directionNumber=(int)o.getProperty("directionNumber");
-		//System.out.println("Ship.setVelocity(): dx="+dx+" dy="+dy+" alphaDirection="+alphaDirection+" directionNumber="+directionNumber);
+		//System.out.println("MovableAdapter.setVelocity(): dx="+dx+" dy="+dy+" alphaDirection="+alphaDirection+" directionNumber="+directionNumber);
 		
 		v=Math.sqrt(dx*dx+dy*dy);
-		if(dx>eps) {
+		if(dx>Globals.eps) {
 			if(dy>0 || Math.abs(dy)==0)
-				alpha=Math.atan(dy/dx);
+				phi=Math.atan(dy/dx);
 			else
-				alpha=Math.atan(dy/dx)+2*Math.PI;
-		} else if(dx<-eps)
-			alpha=Math.atan(dy/dx)+Math.PI;
-		else if(dy>eps)
-			alpha=Math.PI/2;
-		else if(dy<-eps)
-			alpha=-Math.PI/2;
+				phi=Math.atan(dy/dx)+2*Math.PI;
+		} else if(dx<-Globals.eps)
+			phi=Math.atan(dy/dx)+Math.PI;
+		else if(dy>Globals.eps)
+			phi=Math.PI/2;
+		else if(dy<-Globals.eps)
+			phi=-Math.PI/2;
 		else
-			alpha=Double.NaN;
+			phi=Double.NaN;
 		//System.out.println(alpha);
-		if(!Double.isNaN(alpha)) {
-			alpha*=180.0/Math.PI;  //System.out.println(alpha);
-			alphaDirection=(int)Math.ceil(directionNumber*alpha/360.0);
+		if(!Double.isNaN(phi)) {
+			phi*=180.0/Math.PI;  //System.out.println(alpha);
+			phiDirection=(int)Math.ceil(directionNumber*phi/360.0);
 			//System.out.println(alphaDirection);
 		}
 		
-		o.setProperty("alphaDirection",alphaDirection);
+		o.setProperty("phiDirection",phiDirection);
 		o.setProperty("v",v);
-		//System.out.println("Ship.setVelocity(): alphaDirection="+alphaDirection+" v="+v);
+		//System.out.println("MovableAdapter.setVelocity(): alphaDirection="+alphaDirection+" v="+v);
 	}
 }
