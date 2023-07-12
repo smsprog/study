@@ -10,29 +10,23 @@ import imovable.*;
 import iburnable.*;
 
 class IoC {
-	//static <T> T Resolve(Class c, int i, Object... objects) throws Exception {
-	static void Resolve(Class c, int i, Object... objects) throws Exception {
-		//T o=null;
+	static <T> T Resolve(String cname, int i, Object... objects) throws Exception {
 		Class[] cArg=new Class[i];
 		int k=0;
 		
 		for (Object p: objects) {
 			System.out.println(p.getClass());
-			cArg[k++]=p.getClass();
+			if(p.getClass()==Class.forName("java.lang.Double"))
+				cArg[k++]=Double.TYPE;
+			else if(p.getClass()==Class.forName("java.lang.Integer"))
+				cArg[k++]=Integer.TYPE;
+			else 
+				cArg[k++]=p.getClass();
+			System.out.println(cArg[k-1]);
 		}
-		//cl=o.getClass();
-		//c=Class.forName(key);
-		System.out.println(c);
-		//o=c.newInstance();
-		c.getDeclaredConstructor(cArg).newInstance(objects);
-		//return(o);
-	}
-	
-	static <T> void Resolve2(T str) {
-		System.out.println(str.getClass());
+		return((T)Class.forName(cname).getDeclaredConstructor(cArg).newInstance(objects));
 	}
 }
-
 
 class m {
 	private static double eps=0.0001;
@@ -41,11 +35,9 @@ class m {
 	
     public static void main(String[] args) throws Exception {
 		Exception e;
-		Ship ship1=new Ship(12.0, 5.0, 10.0, 360, 7.61577);
+		Ship ship1=null;//=new Ship(12.0, 5.0, 10.0, 360, 7.61577);
 		
-		System.out.println(ship1.getClass());
-		IoC.Resolve(ship1.getClass(), 5, 12.0, 5.0, 10.0, 360, 7.61577);
-		
+		IoC.Resolve("uobject.Ship", 5, 12.0, 5.0, 10.0, 360, 7.61577);
 		
 		/*
 		//e=test(0.0, 0.0, 90.0, 8, 1, 1, 0.0);	 					if(e==null)System.out.println("Test0 passed\n"); else System.out.println("Test0 FAILED, "+e+"\n"); 
