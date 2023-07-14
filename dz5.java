@@ -1,4 +1,7 @@
 import java.util.Vector;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.NoSuchElementException;
@@ -9,22 +12,91 @@ import irotatable.*;
 import imovable.*;
 import iburnable.*;
 
+
+interface IFunction {
+  Object run(Object obj[]);
+}
+
+
+class RegisterCommand implements ICommand {
+	Dictionary<String, IFunction> scope;
+	String cname;
+	IFunction f;
+	
+	public RegisterCommand(Dictionary<String, IFunction> sc, String cname, IFunction f) throws Exception {
+		this.scope=sc;
+		this.cname=cname;
+		this.f=f;
+	}
+
+	public void exec() throws Exception {
+		scope.put((String)cname, (IFunction)f);
+	}
+}
+
+
 class IoC {
-	static <T> T Resolve(String cname, int i, Object... objects) throws Exception {
-		Class[] cArg=new Class[i];
-		int k=0;
+	static Dictionary<String, Class> dict=new Hashtable<>() {{	put("java.lang.Double", Double.TYPE); 
+																put("java.lang.Integer", Integer.TYPE); }};
+
+	static Dictionary<String, IFunction> scope1=new Hashtable<>();
+
+	static void ShowScopes() {
+		//for (Object p: objects)
+		System.out.println("IoC.ShowScopes()");
+		Enumeration<String> k = scope1.keys();
 		
-		for (Object p: objects) {
-			System.out.println(p.getClass());
-			if(p.getClass()==Class.forName("java.lang.Double"))
-				cArg[k++]=Double.TYPE;
-			else if(p.getClass()==Class.forName("java.lang.Integer"))
-				cArg[k++]=Integer.TYPE;
-			else 
-				cArg[k++]=p.getClass();
-			System.out.println(cArg[k-1]);
+        while (k.hasMoreElements()) {
+            String key = k.nextElement();
+            System.out.println("Scope: key="+key+", value="+scope1.get(key));
+        }
+	}
+
+/*	static <T> T Resolve2(String scope, String depName, IFunction f) throws Exception {
+			scope1.put(depName, f);
+			Object[] arr={123, 456};
+			System.out.println(f.run(arr));
+			return(null);
+	} */
+	
+	static <T> T Resolve(String cname, Object... objects) throws Exception {
+		Class[] cArg=new Class[objects.length];
+		Class cl;
+		int k=0;
+		IFunction f;
+		ICommand cmd=null;
+		
+		if (cname=="IoC.Register") {
+			for (Object p: objects) {
+				System.out.println("IoC.Register: "+p+" "+p.getClass());
+			}
+			return((T)new RegisterCommand(scope1, (String)objects[0], (IFunction)objects[1]));
+			//f=(IFunction)objects[1];
+			//Object[] arr={12, 5.0, 10.0, 360, 7.61577};
+			//System.out.println(f.run(arr));
+		} else if(cname.substring(0, 5)=="Scope.") {
+			System.out.println("Scope: "+cname);
+		} else { // call Function
+			/* 
+			for (Object p: objects) {
+				//System.out.println(p.getClass()+" "+dict.get(p.getClass().getName()));
+				cl=dict.get(p.getClass().getName());
+				if(cl!=null)
+					cArg[k]=dict.get(p.getClass().getName());
+				else
+					cArg[k]=p.getClass();
+				k++;
+			} 
+			return((T)Class.forName(cname).getDeclaredConstructor(cArg).newInstance(objects));
+			*/
+			f=scope1.get(cname);
+			if(f!=null)
+				return((T)f.run(objects));
+			else
+				System.out.println("IoC.Resolve: no such function "+cname);
 		}
-		return((T)Class.forName(cname).getDeclaredConstructor(cArg).newInstance(objects));
+			
+		return((T)cmd);
 	}
 }
 
@@ -34,10 +106,21 @@ class m {
 	private static double alpha, fc, v;
 	
     public static void main(String[] args) throws Exception {
-		Exception e;
+		Exception e=null;
 		Ship ship1=null;//=new Ship(12.0, 5.0, 10.0, 360, 7.61577);
+		ICommand cmd;
 		
-		IoC.Resolve("uobject.Ship", 5, 12.0, 5.0, 10.0, 360, 7.61577);
+		ship1=IoC.Resolve("uobject.Ship", 12.0, 5.0, 10.0, 360, 7.61577); if(ship1==null)System.out.println("Test10 passed\n"); else System.out.println("Test10 FAILED, "+ship1+"\n"); 
+		cmd=IoC.Resolve("IoC.Register", "X1", (IFunction)((x) -> (int)x[0]+1) ); cmd.exec(); if(cmd!=null)System.out.println("Test11 passed\n"); else System.out.println("Test11 FAILED\n");
+		cmd=IoC.Resolve("IoC.Register", "Str2", (IFunction)((str) -> {System.out.println("string: "+str[0]+" "+str[1]); return(null);}) ); cmd.exec(); if(cmd!=null)System.out.println("Test12 passed\n"); else System.out.println("Test12 FAILED\n");
+		cmd=IoC.Resolve("IoC.Register", "uobject.Ship", (IFunction)((arr) -> new Ship((double)arr[0], (double)arr[1], (double)arr[2], (int)arr[3], (double)arr[4])) ); cmd.exec(); System.out.println("Test13 passed\n");
+		
+		IoC.ShowScopes();
+		
+		ship1=IoC.Resolve("uobject.Ship", 12.0, 5.0, 10.0, 360, 7.61577); if(ship1!=null)System.out.println("Test14 passed\n"); else System.out.println("Test14 FAILED, "+e+"\n");
+		
+		//System.out.println(Integer.TYPE.getClass());
+		
 		
 		/*
 		//e=test(0.0, 0.0, 90.0, 8, 1, 1, 0.0);	 					if(e==null)System.out.println("Test0 passed\n"); else System.out.println("Test0 FAILED, "+e+"\n"); 
