@@ -38,22 +38,21 @@ class RegisterCommand implements ICommand {
 class IoC {
 	static Dictionary<String, Class> dict=new Hashtable<>() {{	put("java.lang.Double", Double.TYPE); 
 																put("java.lang.Integer", Integer.TYPE); }};
-
-	static Dictionary<String, IFunction> scope1=new Hashtable<>();
+	static Dictionary<String, IFunction> scope=new Hashtable<>();
 
 	static void ShowScopes() {
 		//for (Object p: objects)
 		System.out.println("IoC.ShowScopes()");
-		Enumeration<String> k = scope1.keys();
+		Enumeration<String> k = scope.keys();
 		
         while (k.hasMoreElements()) {
             String key = k.nextElement();
-            System.out.println("Scope: key="+key+", value="+scope1.get(key));
+            System.out.println("Scope: key="+key+", value="+scope.get(key));
         }
 	}
 
 /*	static <T> T Resolve2(String scope, String depName, IFunction f) throws Exception {
-			scope1.put(depName, f);
+			scope.put(depName, f);
 			Object[] arr={123, 456};
 			System.out.println(f.run(arr));
 			return(null);
@@ -70,12 +69,12 @@ class IoC {
 			for (Object p: objects) {
 				System.out.println("IoC.Register: "+p+" "+p.getClass());
 			}
-			return((T)new RegisterCommand(scope1, (String)objects[0], (IFunction)objects[1]));
+			return((T)new RegisterCommand(scope, (String)objects[0], (IFunction)objects[1]));
 			//f=(IFunction)objects[1];
 			//Object[] arr={12, 5.0, 10.0, 360, 7.61577};
 			//System.out.println(f.run(arr));
-		} else if(cname.substring(0, 5)=="Scope.") {
-			System.out.println("Scope: "+cname);
+		} else if(cname.substring(0, 6).equals("Scopes")) {
+			System.out.println("Scopes: "+cname);
 		} else { // call Function
 			/* 
 			for (Object p: objects) {
@@ -89,7 +88,7 @@ class IoC {
 			} 
 			return((T)Class.forName(cname).getDeclaredConstructor(cArg).newInstance(objects));
 			*/
-			f=scope1.get(cname);
+			f=scope.get(cname);
 			if(f!=null)
 				return((T)f.run(objects));
 			else
@@ -97,6 +96,46 @@ class IoC {
 		}
 			
 		return((T)cmd);
+	}
+}
+
+class Str {
+    private String s;
+
+    public Str(String s) {
+        this.s = s;
+    }
+	public String show() {
+        return(this.s);
+    }
+}
+
+class Context implements Runnable {
+	Dictionary<String, IFunction> scope=new Hashtable<>();
+	private static ThreadLocal<Str> scopeName=new ThreadLocal<>();
+	String currentScope;
+	
+	public void run() {
+		//System.out.println("Context.run(): "+currentScope+" scopeName="+scopeName.get().show() );
+		scopeName.set(new Str(currentScope) );
+		scope.put(currentScope, (IFunction)((x) -> (int)x[0]+1) );
+		ShowScopes();
+	}
+	
+	public Context(String currSc) {
+		this.currentScope=currSc;
+		scopeName.set(new Str(currSc) );
+		System.out.println("Context.Context(): currSc="+currSc+" scopeName="+scopeName.get().show() );
+	}
+	
+	public void ShowScopes() {
+		System.out.println("Context.ShowScopes(): scopeName="+scopeName.get().show() );
+		Enumeration<String> k = scope.keys();
+		
+        while (k.hasMoreElements()) {
+            String key = k.nextElement();
+            System.out.println("Context.ShowScopes(): key="+key+", value="+scope.get(key));
+        }
 	}
 }
 
@@ -114,12 +153,23 @@ class m {
 		cmd=IoC.Resolve("IoC.Register", "X1", (IFunction)((x) -> (int)x[0]+1) ); cmd.exec(); if(cmd!=null)System.out.println("Test11 passed\n"); else System.out.println("Test11 FAILED\n");
 		cmd=IoC.Resolve("IoC.Register", "Str2", (IFunction)((str) -> {System.out.println("string: "+str[0]+" "+str[1]); return(null);}) ); cmd.exec(); if(cmd!=null)System.out.println("Test12 passed\n"); else System.out.println("Test12 FAILED\n");
 		cmd=IoC.Resolve("IoC.Register", "uobject.Ship", (IFunction)((arr) -> new Ship((double)arr[0], (double)arr[1], (double)arr[2], (int)arr[3], (double)arr[4])) ); cmd.exec(); System.out.println("Test13 passed\n");
-		
+		ship1=IoC.Resolve("uobject.Ship", 12.0, 5.0, 10.0, 360, 7.61577); if(ship1!=null)System.out.println("Test14 passed\n"); else System.out.println("Test14 FAILED, "+e+"\n");
+
+		//cmd=IoC.Resolve("Scopes.New", "scope1"); cmd.exec(); if(cmd!=null)System.out.println("Test15 passed\n"); else System.out.println("Test15 FAILED\n");
+		//cmd=IoC.Resolve("Scopes.New", "scope2"); cmd.exec(); if(cmd!=null)System.out.println("Test16 passed\n"); else System.out.println("Test16 FAILED\n");
+		//cmd=IoC.Resolve("Scopes.Current", "scope1"); cmd.exec(); if(cmd!=null)System.out.println("Test17 passed\n"); else System.out.println("Test17 FAILED\n");
 		IoC.ShowScopes();
 		
-		ship1=IoC.Resolve("uobject.Ship", 12.0, 5.0, 10.0, 360, 7.61577); if(ship1!=null)System.out.println("Test14 passed\n"); else System.out.println("Test14 FAILED, "+e+"\n");
+		Thread.sleep(2000); System.out.println("\nSleep");
+
+		Context firstUser = new Context("sc1");
+		Context secondUser = new Context("sc2");
+		new Thread(firstUser).start();
+		new Thread(secondUser).start();
 		
-		//System.out.println(Integer.TYPE.getClass());
+		
+		//firstUser.ShowScopes();
+		//secondUser.ShowScopes();
 		
 		
 		/*
