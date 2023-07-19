@@ -14,8 +14,10 @@ public class Ship implements UObject {
 	private double fuelCapacity;
 	private double fuelBurnRate;
 
+	//public Ship() {}
+	
 	public Ship(double x, double y, double a, int directionNumber, double fuelCapacity) {
-		//System.out.println("Ship.Ship()");
+		System.out.println("Ship.Ship(): "+x+" "+y);
 		position=new Vector();
 		position.add(x);
 		position.add(y);
