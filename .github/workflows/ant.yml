@@ -21,6 +21,8 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
+    - name: Run preprocessor
+      run: bash preprocessor.sh
     - name: Build with Ant
       run: ant -noinput -buildfile build.xml
     - name: ls
