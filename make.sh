@@ -5,10 +5,11 @@ if [[ $1 == "build" ]] ; then
 	javac ICommand/*.java && javac IRotatable/*.java && javac IMovable/*.java && javac uobject/*.java 
 	
 	if [ $? -eq 0 ] ; then 
-		echo 'dz4' && javac dz4.java && java m 
-		echo 'dz3' && javac dz3.java && java m
-		echo 'dz2' && javac dz2.java && java m
-		echo 'dz1' && javac dz1.java && java m 
+		echo 'dz5' && javac dz5.java && java m 
+		#echo 'dz4' && javac dz4.java && java m 
+		#echo 'dz3' && javac dz3.java && java m
+		#echo 'dz2' && javac dz2.java && java m
+		#echo 'dz1' && javac dz1.java && java m 
 	fi
 fi
 
