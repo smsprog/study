@@ -16,7 +16,7 @@ public class RegisterInScopeCommand implements ICommand {
 		Dictionary<String, IFunction> scope;
 		
 		System.out.println("RegisterInScopeCommand.exec(): "+cname);
-		scope=IoC.sc.get();
+		scope=IoC.sc.get(); if(scope==null)throw new Exception("No scope defined");
 		scope.put((String)cname, (IFunction)f);
 	}
 }
