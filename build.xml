@@ -18,5 +18,6 @@
 	<javac srcdir="${src}" destdir="${build}" includes="dz6.java"/>
 	<javac srcdir="${src}" destdir="${build}" includes="dz7.java"/>
 	<javac srcdir="${src}" destdir="${build}" includes="dz10.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="dz11.java"/>
   </target>
 </project>
