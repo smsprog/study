@@ -12,11 +12,16 @@ public class EventLoop implements Runnable {
 	Long threadId;
 	Boolean stop;
 	IFunction f;
+	public Object[] args={ null };
 	
 	public EventLoop(Queue<ICommand> q) {
 		//System.out.println("EventLoop constructor");
 		this.q=q;
 		this.stop=false;
+		this.setDefaultStrategy();
+	}
+	
+	public void setDefaultStrategy() {
 		this.f=(arr) -> {
 			ICommand cmd;
 			try {
@@ -26,13 +31,17 @@ public class EventLoop implements Runnable {
 			} catch (Exception e) {
 				if(e.getClass().getSimpleName().equals("NoSuchElementException")) {
 					System.out.println(this.threadId+": No CMD in queue. Sleeping for awhile..."); 
-					try { Thread.sleep(100); } catch(Exception e1) {}
+					try { Thread.sleep(1000); } catch(Exception e1) {}
 				}
 				else
 					System.out.println(this.threadId+": Exception from this CMD: "+e);
 			}
 			return(false);
 		};
+	}
+	
+	public Boolean isStopped() {
+		return(stop);
 	}
 	
 	public void setProcessing(IFunction f) {
@@ -49,13 +58,15 @@ public class EventLoop implements Runnable {
 	
 	public void run() {
 		ICommand cmd;
-		Object[] obj={ null, null };
+		Object[] obj={ null, null, null };
 
 		try {
 			while(!stop) {
 				System.out.println(this.threadId+": Queue size="+q.size());
 				obj[0]=this.q;
 				obj[1]=this.threadId;
+				int i=2;
+				for(Object arg: this.args)obj[i++]=arg;
 				System.out.println(this.threadId+": Loop function: "+this.f);
 				stop=(Boolean)this.f.run(obj);
 
