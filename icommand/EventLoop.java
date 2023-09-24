@@ -33,8 +33,10 @@ public class EventLoop implements Runnable {
 					System.out.println(this.threadId+": No CMD in queue. Sleeping for awhile..."); 
 					try { Thread.sleep(100); } catch(Exception e1) {}
 				}
-				else
+				else {
 					System.out.println(this.threadId+": Exception from this CMD: "+e);
+					return(true);
+				}
 			}
 			return(false);
 		};

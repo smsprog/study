@@ -40,20 +40,22 @@ class m {
 		
 		for(int i=0;i<allNeighborhoods.length;i++)allNeighborhoods[i]=new HashSet<Ship>();
 		
+		/*
 		((Set<Ship>)allNeighborhoods[0]).add(allShips[0]);
 		((Set<Ship>)allNeighborhoods[3]).add(allShips[1]);
 		((Set<Ship>)allNeighborhoods[0]).add(allShips[2]);
 		((Set<Ship>)allNeighborhoods[3]).add(allShips[3]);
 		((Set<Ship>)allNeighborhoods[3]).add(allShips[4]);
-		
+		*/
+		for(Ship sh: allShips)q1.add(new UpdateNeighborhoodCommand(sh, allNeighborhoods, q1));
+
+/*		
 		for(Ship sh: allShips) {
-			mShip=new MovableAdapter(sh, 2.0, 2.0);
-			q1.add(new MoveCommand(mShip));
+			q1.add(new MoveCommand(new MovableAdapter(sh, 2.0, 2.0)));
 			q1.add(new UpdateNeighborhoodCommand(sh, allNeighborhoods, q1));
 		}
-		
-		mShip=new MovableAdapter(allShips[2], -2.0, -2.0);
-		q1.add(new MoveCommand(mShip));
+*/		
+		q1.add(new MoveCommand(new MovableAdapter(allShips[2], 2.0, 2.0)));
 		q1.add(new UpdateNeighborhoodCommand(allShips[2], allNeighborhoods, q1));
 		
 		printNeighborhoods(allNeighborhoods);

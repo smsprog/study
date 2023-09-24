@@ -24,7 +24,7 @@ public class UpdateNeighborhoodCommand implements ICommand {
 		Vector pos;
 		String str="";
 		Queue<ICommand> cmdList=new LinkedList<>();
-		ICommand cmd;
+		ICommand cmd,macroCmd;
 		
 		System.out.println("All neigh:"+allNeighborhoods+", sh="+this.sh);
 		for(oldIdx=0;oldIdx<allNeighborhoods.length;oldIdx++) {
@@ -43,7 +43,11 @@ public class UpdateNeighborhoodCommand implements ICommand {
 			newIdx=0;
 		
 		if(newIdx!=oldIdx) {
-			((Set<Ship>)allNeighborhoods[oldIdx]).remove(sh);
+			try {
+				((Set<Ship>)allNeighborhoods[oldIdx]).remove(sh);
+			} catch (Exception e) {
+				oldIdx=newIdx;
+			}
 			i=0;
 			for(Ship shFromNgh: (Set<Ship>)allNeighborhoods[newIdx]) {
 				//q.add(new CheckCollisionCommand(sh, shFromNgh));
@@ -53,15 +57,16 @@ public class UpdateNeighborhoodCommand implements ICommand {
 			ICommand[] cmdArr=new ICommand[i];
 			for(int j=0;j<cmdArr.length;j++)cmdArr[j]=cmdList.remove();
 			
+			macroCmd=new MacroCommand(cmdArr);
 			try {
-				cmd=IoC.Resolve("Scopes.Current", "Neigh"+oldIdx); cmd.exec();
-				cmd=IoC.Resolve("IoC.Register", "MacroCommand", cmd); cmd.exec();
-			}
-			catch (Exception e) {
+				cmd=IoC.Resolve("Scopes.Current", "Neigh"+newIdx); cmd.exec();
+				System.out.println("UpdateNeighborhoodCommand.exec(): Neigh"+newIdx+" FOUND, replacing MacroCommand...");
+				cmd=IoC.Resolve("IoC.Register", "MacroCommand", (IFunction)((arr) -> (macroCmd))); cmd.exec();
+			} catch (Exception e) {
 				System.out.println("UpdateNeighborhoodCommand.exec(): exception "+e);
-				cmd=new MacroCommand(cmdArr);
+				
 				//System.out.println("UpdateNeighborhoodCommand.exec(): new MacroCommand has created");
-				cmd=new ExecNeighMacroCommand("Neigh"+oldIdx, cmd);
+				cmd=new ExecNeighMacroCommand("Neigh"+newIdx, macroCmd);
 				//System.out.println("UpdateNeighborhoodCommand.exec(): new ExecNeighMacroCommand has created");
 				q.add(cmd);
 				//System.out.println("UpdateNeighborhoodCommand.exec(): new ExecNeighMacroCommand had queued");
