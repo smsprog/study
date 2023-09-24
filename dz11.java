@@ -29,7 +29,8 @@ class m {
 		EventLoop el1;
 		Ship[] allShips={null, null, null, null, null};
 		MovableAdapter mShip;
-		Object[] allNeighborhoods={null, null, null, null}; // neighborhoods {0, 0 <-> 5, 5}, {5, 0 <-> 10, 5}, {0, 5 <-> 5, 10}, {5, 5 <-> 10, 10}
+		Neighborhoods allNgh=new Neighborhoods(2, 0); 	// neighborhoods {0, 0 <-> 5, 5}, {5, 0 <-> 10, 5}, {0, 5 <-> 5, 10}, {5, 5 <-> 10, 10}
+		Neighborhoods allNgh2=new Neighborhoods(2, 1);	// neighborhoods {1, 1 <-> 6, 6}, {6, 1 <-> 11, 6}, {1, 6 <-> 6, 11}, {6, 6 <-> 11, 11}
 		Set<Ship> nghbrhd;
 		
 		allShips[0]=new Ship(0.0, 0.0, 0.0, 360, 3.0);
@@ -37,17 +38,9 @@ class m {
 		allShips[2]=new Ship(4.0, 4.0, 0.0, 360, 3.0);
 		allShips[3]=new Ship(8.0, 8.0, 0.0, 360, 3.0);
 		allShips[4]=new Ship(7.0, 7.0, 0.0, 360, 3.0);
-		
-		for(int i=0;i<allNeighborhoods.length;i++)allNeighborhoods[i]=new HashSet<Ship>();
-		
-		/*
-		((Set<Ship>)allNeighborhoods[0]).add(allShips[0]);
-		((Set<Ship>)allNeighborhoods[3]).add(allShips[1]);
-		((Set<Ship>)allNeighborhoods[0]).add(allShips[2]);
-		((Set<Ship>)allNeighborhoods[3]).add(allShips[3]);
-		((Set<Ship>)allNeighborhoods[3]).add(allShips[4]);
-		*/
-		for(Ship sh: allShips)q1.add(new UpdateNeighborhoodCommand(sh, allNeighborhoods, q1));
+
+		// initialize ships' neighborhoods 
+		for(Ship sh: allShips)q1.add(new UpdateNeighborhoodCommand(sh, allNgh, q1));
 
 /*		
 		for(Ship sh: allShips) {
@@ -56,9 +49,9 @@ class m {
 		}
 */		
 		q1.add(new MoveCommand(new MovableAdapter(allShips[2], 2.0, 2.0)));
-		q1.add(new UpdateNeighborhoodCommand(allShips[2], allNeighborhoods, q1));
+		q1.add(new UpdateNeighborhoodCommand(allShips[2], allNgh, q1));
 		
-		printNeighborhoods(allNeighborhoods);
+		printNeighborhoods(allNgh.neighborhoods);
 		
 		el1=new EventLoop(q1);
 		
@@ -73,7 +66,7 @@ class m {
 			if(tst>0)break;
 			Thread.sleep(1000);
 		}
-		printNeighborhoods(allNeighborhoods);
+		printNeighborhoods(allNgh.neighborhoods);
 		for(Ship sh: allShips)sh.showProps("");
     }
 }
