@@ -52,6 +52,10 @@ class m {
 			q1.add(new UpdateNeighborhoodCommand(sh, allNeighborhoods, q1));
 		}
 		
+		mShip=new MovableAdapter(allShips[2], -2.0, -2.0);
+		q1.add(new MoveCommand(mShip));
+		q1.add(new UpdateNeighborhoodCommand(allShips[2], allNeighborhoods, q1));
+		
 		printNeighborhoods(allNeighborhoods);
 		
 		el1=new EventLoop(q1);

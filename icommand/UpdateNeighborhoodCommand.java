@@ -24,8 +24,9 @@ public class UpdateNeighborhoodCommand implements ICommand {
 		Vector pos;
 		String str="";
 		Queue<ICommand> cmdList=new LinkedList<>();
+		ICommand cmd;
 		
-		System.out.println("All neigh:"+allNeighborhoods);
+		System.out.println("All neigh:"+allNeighborhoods+", sh="+this.sh);
 		for(oldIdx=0;oldIdx<allNeighborhoods.length;oldIdx++) {
 			ngh=(Set<Ship>)allNeighborhoods[oldIdx];
 			if(ngh.contains(sh))break;
@@ -51,10 +52,26 @@ public class UpdateNeighborhoodCommand implements ICommand {
 			}
 			ICommand[] cmdArr=new ICommand[i];
 			for(int j=0;j<cmdArr.length;j++)cmdArr[j]=cmdList.remove();
-			q.add(new MacroCommand(cmdArr));
+			
+			try {
+				cmd=IoC.Resolve("Scopes.Current", "Neigh"+oldIdx); cmd.exec();
+				cmd=IoC.Resolve("IoC.Register", "MacroCommand", cmd); cmd.exec();
+			}
+			catch (Exception e) {
+				System.out.println("UpdateNeighborhoodCommand.exec(): exception "+e);
+				cmd=new MacroCommand(cmdArr);
+				//System.out.println("UpdateNeighborhoodCommand.exec(): new MacroCommand has created");
+				cmd=new ExecNeighMacroCommand("Neigh"+oldIdx, cmd);
+				//System.out.println("UpdateNeighborhoodCommand.exec(): new ExecNeighMacroCommand has created");
+				q.add(cmd);
+				//System.out.println("UpdateNeighborhoodCommand.exec(): new ExecNeighMacroCommand had queued");
+			}
+			
 			((Set<Ship>)allNeighborhoods[newIdx]).add(sh);
-			str=", neigh of "+sh+" has changed to "+newIdx+", "+i+" CheckCollisionCommand added";
+			str=", neigh of "+sh+" has changed to Neigh"+newIdx+", "+i+" CheckCollisionCommand added";
 		}
-		System.out.println("Neigh"+oldIdx+" contains "+sh+", "+sh.getProperty("position")+str);
+		System.out.println("Ship "+sh+" is in Neigh"+oldIdx+", "+sh.getProperty("position")+str);
 	}
 }
+
+

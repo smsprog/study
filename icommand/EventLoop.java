@@ -31,7 +31,7 @@ public class EventLoop implements Runnable {
 			} catch (Exception e) {
 				if(e.getClass().getSimpleName().equals("NoSuchElementException")) {
 					System.out.println(this.threadId+": No CMD in queue. Sleeping for awhile..."); 
-					try { Thread.sleep(1000); } catch(Exception e1) {}
+					try { Thread.sleep(100); } catch(Exception e1) {}
 				}
 				else
 					System.out.println(this.threadId+": Exception from this CMD: "+e);
@@ -70,7 +70,7 @@ public class EventLoop implements Runnable {
 				System.out.println(this.threadId+": Loop function: "+this.f);
 				stop=(Boolean)this.f.run(obj);
 
-				Thread.sleep(1000);
+				Thread.sleep(100);
 			}
 		} catch (Exception e) {
 			System.out.println(this.threadId+": EXCEPTION in the thread: "+e);
