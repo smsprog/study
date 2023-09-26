@@ -17,11 +17,7 @@ import iburnable.*;
 class m {
 	static ICommand cmd;
 	
-	public static void printNeighborhoods(Object[] nghs) {
-		for(int i=0;i<nghs.length;i++) {
-			System.out.println("Neigh"+i+": "+((Set<Ship>)nghs[i]) );
-		}
-	}
+
 	
     public static void main(String[] args) throws Exception {
 		Queue<ICommand> q1=new LinkedList<>();
@@ -29,9 +25,12 @@ class m {
 		EventLoop el1;
 		Ship[] allShips={null, null, null, null, null};
 		MovableAdapter mShip;
-		Neighborhoods allNgh=new Neighborhoods(2, 0); 	// neighborhoods {0, 0 <-> 5, 5}, {5, 0 <-> 10, 5}, {0, 5 <-> 5, 10}, {5, 5 <-> 10, 10}
-		Neighborhoods allNgh2=new Neighborhoods(2, 1);	// neighborhoods {1, 1 <-> 6, 6}, {6, 1 <-> 11, 6}, {1, 6 <-> 6, 11}, {6, 6 <-> 11, 11}
+		Neighborhoods[] allNghs={null, null};
 		Set<Ship> nghbrhd;
+		
+		allNghs[0]=new Neighborhoods(2, 0); 	// neighborhoods {0, 0 <-> 5, 5}, {5, 0 <-> 10, 5}, {0, 5 <-> 5, 10}, {5, 5 <-> 10, 10}
+		allNghs[1]=new Neighborhoods(2, 1);	// neighborhoods {1, 1 <-> 6, 6}, {6, 1 <-> 11, 6}, {1, 6 <-> 6, 11}, {6, 6 <-> 11, 11}
+		
 		
 		allShips[0]=new Ship(0.0, 0.0, 0.0, 360, 3.0);
 		allShips[1]=new Ship(9.0, 9.0, 0.0, 360, 3.0);
@@ -40,7 +39,7 @@ class m {
 		allShips[4]=new Ship(7.0, 7.0, 0.0, 360, 3.0);
 
 		// initialize ships' neighborhoods 
-		for(Ship sh: allShips)q1.add(new UpdateNeighborhoodCommand(sh, allNgh, q1));
+		for(Ship sh: allShips)q1.add(new UpdateNeighborhoodCommand(sh, allNghs, q1));
 
 /*		
 		for(Ship sh: allShips) {
@@ -49,9 +48,10 @@ class m {
 		}
 */		
 		q1.add(new MoveCommand(new MovableAdapter(allShips[2], 2.0, 2.0)));
-		q1.add(new UpdateNeighborhoodCommand(allShips[2], allNgh, q1));
+		q1.add(new UpdateNeighborhoodCommand(allShips[2], allNghs, q1));
 		
-		printNeighborhoods(allNgh.neighborhoods);
+		for(int k=0;k<allNghs.length;k++)
+			allNghs[k].printNeighborhoods();
 		
 		el1=new EventLoop(q1);
 		
@@ -66,8 +66,10 @@ class m {
 			if(tst>0)break;
 			Thread.sleep(1000);
 		}
-		printNeighborhoods(allNgh.neighborhoods);
-		for(Ship sh: allShips)sh.showProps("");
+		for(int k=0;k<allNghs.length;k++)
+			allNghs[k].printNeighborhoods();
+		System.out.println("");
+		for(Ship sh: allShips)sh.showProps("");		
     }
 }
 

@@ -44,7 +44,7 @@ public class MovableAdapter implements IMovable {
 		phiDirection=(int)o.getProperty("phiDirection");
 		directionNumber=(int)o.getProperty("directionNumber");
 		phi=360.0*phiDirection/(double)directionNumber*Math.PI/180.0;
-		System.out.println("MovableAdapter.move(): v="+v+" phiDirection="+phiDirection+" directionNumber="+directionNumber+" phi="+phi+" "+o);
+		System.out.println("MovableAdapter.move(): "+o+" v="+v+" phiDirection="+phiDirection+" directionNumber="+directionNumber+" phi="+phi);
 
 		posNew.add((double)pos.elementAt(0)+v*Math.cos(phi));
 		posNew.add((double)pos.elementAt(1)+v*Math.sin(phi));

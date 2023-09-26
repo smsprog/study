@@ -2,6 +2,7 @@ package uobject;
 
 import java.util.Vector;
 import java.util.HashSet;
+import java.util.Set;
 import uobject.*;
 
 public class Neighborhoods {
@@ -29,5 +30,12 @@ public class Neighborhoods {
 			return(2);
 		else
 			return(0);
+	}
+	
+	public void printNeighborhoods() {
+		System.out.println("allNgh: "+this+" size: "+size+" shift: "+shift+" unit: "+unit);
+		for(int i=0;i<neighborhoods.length;i++) {
+			System.out.println("Neigh"+i+": "+((Set<Ship>)neighborhoods[i]) );
+		}
 	}
 }
