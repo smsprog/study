@@ -46,14 +46,14 @@ public class IoC {
 		}
 		else if (cname=="IoC.Register") {
 			for (Object p: objects) {
-				System.out.println("IoC.Register: "+p+" class="+p.getClass());
+				if(Globals.DEBUG_LEVEL>0)System.out.println("IoC.Register: "+p+" class="+p.getClass());
 			}
 			return((T)new RegisterInScopeCommand((String)objects[0], (IFunction)objects[1]));
 		} else if(cname.equals("Scopes.New")) {
-			System.out.println("IoC.Register: "+cname+" "+objects[0]);
+			if(Globals.DEBUG_LEVEL>0)System.out.println("IoC.Register: "+cname+" "+objects[0]);
 			return((T)new NewScopeCommand((String)objects[0]) );
 		} else if(cname.equals("Scopes.Current")) {
-			System.out.println("IoC.Register: "+cname+" "+objects[0]);
+			if(Globals.DEBUG_LEVEL>0)System.out.println("IoC.Register: "+cname+" "+objects[0]);
 			return((T)new SwitchScopeCommand((String)objects[0]) );
 		} else { // call Function
 			scope=sc.get();

@@ -17,7 +17,7 @@ public class Ship implements UObject {
 	//public Ship() {}
 	
 	public Ship(double x, double y, double a, int directionNumber, double fuelCapacity) {
-		System.out.println("Ship.Ship(): "+x+" "+y);
+		System.out.println("Ship.Ship(): "+this+" "+x+" "+y);
 		position=new Vector();
 		position.add(x);
 		position.add(y);
@@ -38,7 +38,7 @@ public class Ship implements UObject {
 	}
 	
 	public void showProps(String prefix) {
-		System.out.println(prefix+"Ship.showProps(): x="+(double)position.elementAt(0)+" y="+(double)position.elementAt(1)+" v="+v+" alphaDirection="+alphaDirection+" directionNumber="+directionNumber+" fuelCapacity="+fuelCapacity);
+		System.out.println(prefix+"Ship.showProps(): "+this+" x="+(double)position.elementAt(0)+" y="+(double)position.elementAt(1)+" v="+v+" alphaDirection="+alphaDirection+" directionNumber="+directionNumber+" fuelCapacity="+fuelCapacity);
 	}
 	
 	public double getAlpha() {
