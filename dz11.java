@@ -17,14 +17,13 @@ import iburnable.*;
 class m {
 	static ICommand cmd;
 	
-
-	
     public static void main(String[] args) throws Exception {
 		Queue<ICommand> q1=new LinkedList<>();
 		int tst;
 		EventLoop el1;
 		Ship[] allShips={null, null, null, null, null};
 		MovableAdapter mShip;
+		//Neighborhoods[] allNghs={null, null};
 		Neighborhoods[] allNghs={null, null};
 		Set<Ship> nghbrhd;
 		
