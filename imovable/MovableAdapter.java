@@ -5,6 +5,8 @@ import java.util.Vector;
 
 public class MovableAdapter implements IMovable {
 	private UObject o;
+	double v=0;
+	double dx=0,dy=0;
 	
 	public MovableAdapter(UObject o) {
 		this.o=o;
@@ -13,13 +15,14 @@ public class MovableAdapter implements IMovable {
 	public MovableAdapter(UObject o, double v) throws Exception {
 		//System.out.println("Ship.Ship()");
 		this(o);
-		this.o.setProperty("v",v);
+		this.v=v;
 	}
 	
 	public MovableAdapter(UObject o, double dx, double dy) throws Exception {
 		//System.out.println("Ship.Ship()");
 		this(o);
-		setVelocity(dx, dy);
+		this.dx=dx;
+		this.dy=dy;
 	}
 
 	public void setPosition(Vector newPosition) throws Exception {
@@ -33,16 +36,20 @@ public class MovableAdapter implements IMovable {
 		double v,phi;
 		int phiDirection,directionNumber;
 		
+		if(this.v!=0)this.o.setProperty("v",this.v);
+		if(this.dx!=0 && this.dy!=0)setVelocity(this.dx, this.dy);
+		
 		pos=o.getPosition();
 		v=(double)o.getProperty("v");
 		phiDirection=(int)o.getProperty("phiDirection");
 		directionNumber=(int)o.getProperty("directionNumber");
 		phi=360.0*phiDirection/(double)directionNumber*Math.PI/180.0;
-		System.out.println("MovableAdapter.move(): v="+v+" phiDirection="+phiDirection+" directionNumber="+directionNumber+" phi="+phi);
+		System.out.println("MovableAdapter.move(): "+o+" v="+v+" phiDirection="+phiDirection+" directionNumber="+directionNumber+" phi="+phi);
 
 		posNew.add((double)pos.elementAt(0)+v*Math.cos(phi));
 		posNew.add((double)pos.elementAt(1)+v*Math.sin(phi));
 		setPosition(posNew);
+		System.out.println("MovableAdapter.move(): "+o.getPosition());
 	}
 	
 	public void setVelocity(double dx, double dy) throws Exception {
