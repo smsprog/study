@@ -11,6 +11,7 @@ public class UpdateNeighborhoodCommand implements ICommand {
 	Ship sh;
 	Neighborhoods[] allNgh;
 	Queue<ICommand> q;
+	int macroSize=0;
 	
 	public UpdateNeighborhoodCommand(Ship sh, Neighborhoods[] allNgh, Queue<ICommand> q) throws Exception {
 		this.sh=sh;
@@ -66,7 +67,7 @@ public class UpdateNeighborhoodCommand implements ICommand {
 				}
 				
 				((Set<Ship>)allNgh[k].neighborhoods[newIdx[k]]).add(sh);
-				str=", neigh of "+sh+" has changed to "+this.allNgh[k]+"_"+newIdx[k]+", "+cmdArr.length+" CheckCollisionCommand added";
+				str=", neigh of "+sh+" has changed to "+this.allNgh[k]+"_"+newIdx[k]+", "+this.macroSize+" CheckCollisionCommand added";
 			}
 			System.out.println("Ship "+sh+" is in "+this.allNgh[k]+"_"+oldIdx[k]+", "+sh.getProperty("position")+str);
 		}
@@ -77,11 +78,16 @@ public class UpdateNeighborhoodCommand implements ICommand {
 	}
 	
 	ICommand[] prepareCmds4MacroByNgh(Neighborhoods allNgh, int nghIdx) throws Exception {
-		Queue<ICommand> cmdList=new LinkedList<>();
+		CheckCollisionCommand hdl=null,hdlNext=null;
 		
-		for(Ship shFromNgh: (Set<Ship>)allNgh.neighborhoods[nghIdx])cmdList.add(new CheckCollisionCommand(this.sh, shFromNgh));
-		ICommand[] cmdArr=new ICommand[cmdList.size()];
-		for(int j=0;j<cmdArr.length;j++)cmdArr[j]=cmdList.remove();
+		
+		for(Ship shFromNgh: (Set<Ship>)allNgh.neighborhoods[nghIdx]) {
+			hdl=new CheckCollisionCommand(this.sh, shFromNgh, hdlNext);
+			hdlNext=hdl;
+		}
+		this.macroSize=((Set<Ship>)allNgh.neighborhoods[nghIdx]).size();
+		ICommand[] cmdArr=new ICommand[Math.min(this.macroSize, 1)];
+		if(cmdArr.length>0)cmdArr[0]=hdl;
 		return(cmdArr);
 	}
 }
