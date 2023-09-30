@@ -56,9 +56,11 @@ public class IoC {
 			if(Globals.DEBUG_LEVEL>0)System.out.println("IoC.Register: "+cname+" "+objects[0]);
 			return((T)new SwitchScopeCommand((String)objects[0]) );
 		} else { // call Function
+			if(Globals.DEBUG_LEVEL>0)System.out.println("IoC.Resolve: looking for function "+cname);
 			scope=sc.get();
 			if(scope!=null) {
 				f=scope.get(cname);
+				if(Globals.DEBUG_LEVEL>0)System.out.println("IoC.Resolve: found function "+f);
 				if(f!=null)
 					return((T)f.run(objects));		
 			}

@@ -32,8 +32,8 @@ class m {
 		allShips[4]=new Ship(7.0, 7.0, 0.0, 360, 3.0);
 		
 		//MovableAdapter 	mShip=new MovableAdapter(allShips[0], 2.0, 2.0);
-		//MovableAdapter 	mShip=new MovableAdapter(allShips[0], 2.0);
-		//q1.add(new MoveCommand(mShip));
+		MovableAdapter 	mShip=new MovableAdapter(allShips[0], 2.0);
+		q1.add(new MoveCommand(mShip));
 		
 		q1.add(new OrderCommand(order, allShips));
 		
