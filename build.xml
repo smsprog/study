@@ -16,7 +16,7 @@
   </target>
 
 <target name="compile" description="compile whole project" depends="init">
-    <echo>compile ${ant.project.name} </echo>
-	<javac srcdir="${src}" destdir="${build}" />
+	<echo>compile ${ant.project.name} </echo>
+	<javac srcdir="${src}" destdir="${build}" includes="dz11.java"/>
   </target>
 </project>
