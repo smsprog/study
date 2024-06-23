@@ -4,20 +4,19 @@
   <property name="build" value="."/>
   <property name="lib"   value="."/>
 
+<target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+</target>
+	
 <target name="all" depends="compile" description="Builds the whole project">
     <echo>Doing all</echo>
   </target>
 
-<target name="compile" description="compile whole project">
+<target name="compile" description="compile whole project" depends="init">
     <echo>compile ${ant.project.name} </echo>
-	<javac srcdir="${src}" destdir="${build}" includes="src/dz1.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="src/dz2.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="src/dz3.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="src/dz4.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="src/dz5.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="src/dz6.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="src/dz7.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="src/dz10.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="src/dz11.java"/>
+	<javac srcdir="${src}" destdir="${build}" />
   </target>
 </project>
