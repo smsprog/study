@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <project name="test" default="all" basedir=".">
+
 	<property name="src"   value="src"/>
 	<property name="build" value="build"/>
 	<property name="lib"   value="."/>
@@ -11,12 +12,13 @@
 		<mkdir dir="${build}"/>
 	</target>
 
-<target name="all" depends="compile" description="Builds the whole project">
-    <echo>Doing all</echo>
-  </target>
+	<target name="compile" description="compile whole project" depends="init">
+		<echo>compile ${ant.project.name} </echo>
+		<javac srcdir="${src}" destdir="${build}" />
+	</target>
 
-<target name="compile" description="compile whole project">
-    <echo>compile ${ant.project.name} </echo>
-	<javac srcdir="${src}" destdir="${build}" />
-  </target>
+	<target name="all" depends="compile" description="Builds the whole project">
+		<echo>Doing all</echo>
+	</target>
+
 </project>
