@@ -10,14 +10,14 @@
 
 <target name="compile" description="compile whole project">
     <echo>compile ${ant.project.name} </echo>
-	<javac srcdir="${src}" destdir="${build}" includes="dz1.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="dz2.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="dz3.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="dz4.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="dz5.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="dz6.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="dz7.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="dz10.java"/>
-	<javac srcdir="${src}" destdir="${build}" includes="dz11.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="src/dz1.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="src/dz2.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="src/dz3.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="src/dz4.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="src/dz5.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="src/dz6.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="src/dz7.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="src/dz10.java"/>
+	<javac srcdir="${src}" destdir="${build}" includes="src/dz11.java"/>
   </target>
 </project>
