@@ -12,7 +12,7 @@ import irotatable.*;
 import imovable.*;
 import iburnable.*;
 
-class m {
+class dz7 {
 	static ICommand cmd;
 	
     public static void main(String[] args) throws Exception {

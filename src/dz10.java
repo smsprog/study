@@ -74,7 +74,7 @@ class EventLoopStateStopped implements IState {
 }
 
 
-class m {
+class dz10 {
 	static ICommand cmd;
 	
     public static void main(String[] args) throws Exception {

@@ -65,7 +65,7 @@ class Test2 extends Test implements Runnable {
 	}
 }
 
-class m {
+class dz5 {
 	static double eps=0.0001;
 	static Vector pos;
 	static double alpha, fc, v;

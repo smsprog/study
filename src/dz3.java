@@ -8,7 +8,7 @@ import icommand.*;
 import irotatable.*;
 import imovable.*;
 
-class m {
+class dz3 {
 	private static double eps=0.0001;
 	private static Vector pos;
 	private static double alpha;

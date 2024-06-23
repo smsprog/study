@@ -14,7 +14,7 @@ import irotatable.*;
 import imovable.*;
 import iburnable.*;
 
-class m {
+class dz11 {
 	static ICommand cmd;
 	
     public static void main(String[] args) throws Exception {

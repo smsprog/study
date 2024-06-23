@@ -18,7 +18,7 @@ class Eq {
 	}
 }
 
-class m {
+class dz1 {
 	private static double[] xx;
 	
     public static void main(String[] args) {

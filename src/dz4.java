@@ -9,7 +9,7 @@ import irotatable.*;
 import imovable.*;
 import iburnable.*;
 
-class m {
+class dz4 {
 	private static double eps=0.0001;
 	private static Vector pos;
 	private static double alpha, fc, v;
