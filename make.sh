@@ -7,6 +7,7 @@ if [[ $1 == "build" ]] ; then
 	if [ $? -eq 0 ] ; then 
 		echo 'dz11' && javac dz11.java && java m 
 	fi
+
 fi
 
 if [[ $1 == "clean" ]] ; then
