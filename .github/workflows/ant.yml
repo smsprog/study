@@ -28,4 +28,4 @@ jobs:
     - name: ls
       run: ls -al
     - name: EXECUTE
-      run: java -cp build dz11
+      run: java -cp build dz10
